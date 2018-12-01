@@ -1,6 +1,7 @@
 # Parser for simple menu scripting
 ## Syntax :
 Input is read line by line.
+
 |Expression| Meaning |
 |:--------------|:-----------------------|
 |prompt:\<prompt> | Sets menu prompt; default ""|
