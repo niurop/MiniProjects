@@ -1,0 +1,66 @@
+#!/bin/awk -f
+function isInS(x, ys)
+{
+  split(ys, cs, " ")
+  for(c in cs)
+    if(x == cs[c]) 
+      return 1
+  return 0
+}
+function slash(x)
+{
+  return invert ? x != "\\" : x == "\\"
+}
+BEGIN {
+  invert = 1
+  prompt = ""
+  cmd = "echo"
+  type = "Option"
+  n = 0
+}
+/^prompt:#*/ {prompt = substr($0, 8)}
+/^cmd:#*/ {cmd = substr($0, 5)}
+/^type:#*/ {type = substr($0, 7)}
+!/^[ \t]*$|^cmd:#*|^prompt:#*|^type:#*|\##*/ {
+  N = split($0, chars, "")
+  _key = ""
+  _comment = ""
+  _type = ""
+  _cmd = ""
+  for(i = 1; i <= N && (!isInS(chars[i], "( [ {") || slash(chars[i-1])); i++)
+    _key = _key chars[i]
+  for(; i <= N && (!isInS(chars[i], "( [ {") || slash(chars[i-1])); i++);
+  if(chars[i] == "[")
+    for(i++; i <= N && (chars[i] != "]" || slash(chars[i-1])); i++)
+      _comment = _comment chars[i]
+  for(; i <= N && (!isInS(chars[i], "( {") || slash(chars[i-1])); i++);
+  if(chars[i] == "(")
+    for(i++; i <= N && (chars[i] != ")" || slash(chars[i-1])); i++)
+      _type = _type chars[i]
+  for(; i <= N && (chars[i] != "{" || slash(chars[i-1])); i++);
+  if(chars[i] == "{")
+    for(i++; i <= N && (chars[i] != "}" || slash(chars[i-1])); i++)
+      _cmd = _cmd chars[i]
+  N = split(_key, arr, "")
+  keys[n] = ""
+  for(i = 1; i <= N; i++)
+    keys[n] = keys[n] arr[arr[i] == "\\" ? ++i : i]
+  N = split(_comment, arr, "")
+  comments[n] = ""
+  for(i = 1; i <= N; i++)
+    comments[n] = comments[n] arr[arr[i] == "\\" ? ++i : i]
+  N = split(_type, arr, "")
+  types[n] = ""
+  for(i = 1; i <= N; i++)
+    types[n] = types[n] arr[arr[i] == "\\" ? ++i : i]
+  N = split(_cmd, arr, "")
+  cmds[n] = ""
+  for(i = 1; i <= N; i++)
+    cmds[n] = cmds[n] arr[arr[i] == "\\" ? ++i : i]
+  n++
+}
+END {
+  print prompt "\n" type "\n" n
+  for(i = 0; i < n; i++)
+    print i "\n" keys[i] "\n" comments[i] "\n" types[i] "\n" ((cmds[i] == "") ? cmd " " keys[i] : cmds[i])
+}
