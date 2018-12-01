@@ -16,6 +16,11 @@ Input is read line by line.
 |\<key>(\<type>){\<command>} | Option "\<key>"; return value dependent on \<type> and \<command>|
 |\<key>\[\<long comment>](\<type>){\<command>} | Option "\<key> : \<long comment>"; return value dependent on <type> and \<command>|
 |#\<text> | One line comment|
+
+One can use \\(, \\\[, \\{, \\), \\\], \\} to omit definitions showed above.
+
+Seting -i flag will switch \\(, \\\[, \\{, \\), \\\], \\} with (, \[, {, ), \], }.
+
 ## Result
 Srcript will parse stdin and print to stdout result of the following form:
   + \<prompt>
