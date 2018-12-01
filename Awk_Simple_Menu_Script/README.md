@@ -19,7 +19,7 @@ Input is read line by line.
 
 One can use \\(, \\\[, \\{, \\), \\\], \\} to omit definitions showed above.
 
-Seting -i flag will switch \\(, \\\[, \\{, \\), \\\], \\} with (, \[, {, ), \], }.
+Setting -i flag will switch \\(, \\\[, \\{, \\), \\\], \\} with (, \[, {, ), \], }.
 
 ## Result
 Srcript will parse stdin and print to stdout result of the following form:
