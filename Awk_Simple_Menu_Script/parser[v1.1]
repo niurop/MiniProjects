@@ -20,7 +20,7 @@ BEGIN {
 }
 /^prompt:#*/ {prompt = substr($0, 8)}
 /^cmd:#*/ {cmd = substr($0, 5)}
-/^type:#*/ {type = substr($0, 7)}
+/^type:#*/ {type = substr($0, 6)}
 !/^[ \t]*$|^cmd:#*|^prompt:#*|^type:#*|\##*/ {
   N = split($0, chars, "")
   _key = ""
