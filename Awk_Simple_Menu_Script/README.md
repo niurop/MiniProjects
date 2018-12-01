@@ -23,6 +23,7 @@ Srcript will parse stdin and print to stdout result of the following form:
   + \<number of records>
   
 and for each option
+  + \<index of record>
   + \<key>
   + \<comment>
   + \<type>
