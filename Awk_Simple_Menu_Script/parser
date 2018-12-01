@@ -1,0 +1,42 @@
+#!/bin/awk -f
+function isInS(x, ys)
+{
+  split(ys, cs, " ")
+  for(c in cs)
+    if(x == cs[c]) 
+      return 1
+  return 0
+}
+BEGIN {
+  prompt = ""
+  cmd = "echo"
+  type = "Option"
+  n = 0
+}
+/^prompt:#*/ {prompt = substr($0, 8)}
+/^cmd:#*/ {cmd = substr($0, 6)}
+/^type:#*/ {type = substr($0, 7)}
+!/^[ \t]*$|^cmd:#*|^prompt:#*|^type:#*|\##*/ {
+  N = split($0, chars, "")
+  keys[n] = ""
+    for(i = 1; i <= N && (!isInS(chars[i], "( [ {") || chars[i-1] == "\\"); i++)
+      keys[n] = keys[n] chars[i]
+    for(; i <= N && (!isInS(chars[i], "( [ {") || chars[i-1] == "\\"); i++)
+    if(chars[i] == "[")
+      for(i++; i <= N && (chars[i] != "]" || chars[i-1] == "\\"); i++)
+        comments[n] = comments[n] chars[i]
+    for(; i <= N && (!isInS(chars[i], "( {") || chars[i-1] == "\\"); i++)
+      if(chars[i] == "(")
+        for(i++; i <= N && (chars[i] != ")" || chars[i-1] == "\\"); i++)
+          types[n] = types[n] chars[i]
+    for(; i <= N && (chars[i] != "{" || chars[i-1] == "\\"); i++)
+      if(chars[i] == "{")
+        for(i++; i <= N && (chars[i] != "}" || chars[i-1] == "\\"); i++)
+          cmds[n] = cmds[n] chars[i]
+    n++
+}
+END {
+  print prompt "\n" type "\n" n
+  for(i = 0; i < n; i++)
+    print i "\n" keys[i] "\n" comments[i] "\n" types[i] "\n" ((cmds[i] == "") ? cmd " " keys[i] : cmds[i])
+}
