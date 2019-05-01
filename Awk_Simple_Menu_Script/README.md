@@ -1,3 +1,5 @@
+# Project abandoned
+
 # Parser for simple menu scripting
 ## Syntax :
 Input is read line by line.
